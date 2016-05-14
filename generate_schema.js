@@ -10,13 +10,14 @@ function generateSchema(options,cb){
 	prepend=options.generatePath;
     }
     else{
-	prepend='config';
+	prepend='auto_gen';
     }
     var filepath=Path.join(prepend,filename);
     var options={
 	dsn:'mysql://'+usingConfig.user+':'+usingConfig.password+'@'+usingConfig.host+'/'+usingConfig.database,
 	outputFile:filepath,
-	dialect:'mysql'
+	dialect:'mysql',
+	append:"sql.setDialect('mysql');"
     };
     generateSqlDefinition(options,function (err,stats){
 	if (err) {
@@ -36,6 +37,7 @@ module.exports={
 (function(){
     if(require.main==module){
 	generateSchema({},function (err,stats){
+	    
 	    console.log(stats)
 	});
     }
