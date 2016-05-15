@@ -4,7 +4,7 @@ var dbconfig = require('./config/dbconfig');
     create new connection every and end it after the query
     other wise it may leave opened connections after dbcrawler has stopped
 */
-function exec(query,cb){
+function exec(query,dbconfig,cb){
     var connection = mysql.createConnection(dbconfig);
     connection.query(query, function(err, rows, fields) {
 	connection.end();

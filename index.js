@@ -86,12 +86,20 @@ function getData(metadata,finalData,finalQuery,data, cb) {
 	return cb(new Error('Invalid table specified'));
     }
     var selects = table.star();
+    if(data.result && !util.isArray(data.result)){
+	data.result=[data.result];
+    }
     data.result.forEach(function (row) {
-	filters.push(table[row.column].equals(row.value));
+	if(util.isArray(row.value)){
+	    filters.push(table[row.column].in(row.value));
+	}
+	else{
+	    filters.push(table[row.column].equals(row.value));
+	}
     });
     var query = table.select(selects).from(table);
     query = query.where.apply(query, filters);
-    mysqlcon.exec(query.toString(),function (err, result) {
+    mysqlcon.exec(query.toString(),metadata.dbconfig,function (err, result) {
 	if (err) {
 	    return cb(err);
 	}
@@ -189,7 +197,8 @@ function crawl(options,schema,constraints,callback){
     var finalQuery={};
     var metadata={
 	schema:schema,
-	constraints: constraints
+	constraints: constraints,
+	dbconfig:options.dbconfig
     };
     var q = async.queue(getData.bind(null,metadata,finalData,finalQuery));
     //seed for dbcrawler to start
