@@ -23,5 +23,17 @@
     "database"
   ],
   "author": "palash kulshreshtha",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palashkulsh/dbcrawler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/palashkulsh/dbcrawler/issues"
+  },
+  "homepage": "https://github.com/palashkulsh/dbcrawler#readme"
 }
