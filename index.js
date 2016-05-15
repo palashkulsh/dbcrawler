@@ -193,13 +193,7 @@ function crawl(options,schema,constraints,callback){
     };
     var q = async.queue(getData.bind(null,metadata,finalData,finalQuery));
     //seed for dbcrawler to start
-    var input = [{
-	table: 'actor',
-	result: [{
-	    column: 'actor_id',
-	    value: 1
-	}]
-    }];
+    var input = options.seed;
     recursivePush(metadata,input, q, function (err) {
 	console.log('some error occured',err);
     });
@@ -286,7 +280,10 @@ function main(fkpk,options,cb){
 	}
     ],cb);
 }
-
+//todo
+//1)commander support for cli input
+//2)meta data for merchant payout
+//3)seed object as well as array support
 (function () {
     if (require.main == module) {
 	var fkpk = require('./test/sakila/sakila_fkpk');
@@ -294,7 +291,14 @@ function main(fkpk,options,cb){
 	    dbconfig:dbconfig,
 	    queryFileName:'/tmp/palash.sql',
 	    // noQuery:true,
-	    noData:true
+	    noData:true, 
+	    seed:[{
+		table: 'actor',
+		result: [{
+		    column: 'actor_id',
+		    value: 1
+		}]
+	    }]
 	};
 	main(fkpk,options,function (err,result){
 	    console.log(err,result);
