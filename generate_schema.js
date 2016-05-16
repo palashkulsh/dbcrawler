@@ -12,19 +12,19 @@ function generateSchema(options,cb){
     else{
 	prepend='auto_gen';
     }
-    var filepath=Path.join(prepend,filename);
+    var filepath=Path.join(__dirname,prepend,filename);
     var options={
 	dsn:'mysql://'+usingConfig.user+':'+usingConfig.password+'@'+usingConfig.host+'/'+usingConfig.database,
 	outputFile:filepath,
 	dialect:'mysql',
-	append:"sql.setDialect('mysql');"
+	append:"sql.setDialect('mysql');",
     };
     generateSqlDefinition(options,function (err,stats){
 	if (err) {
             return cb(err);
 	}
 	var returnOpts={
-	    file:'./'+filepath
+	    file:filepath
 	};
 	return cb(err,returnOpts);
     });
@@ -37,7 +37,6 @@ module.exports={
 (function(){
     if(require.main==module){
 	generateSchema({},function (err,stats){
-	    
 	    console.log(stats)
 	});
     }
