@@ -237,22 +237,6 @@ function writeToFile(data,filename,cb){
 function main(fkpk,options,cb){
     async.waterfall([
 	async.constant(fkpk,options),
-	function (fkpk,opts,callback){
-	    var path='auto_gen';
-	    fs.readdir(path,function (err,files){
-		if(err){
-		    fs.mkdir(path,function (err){
-			if(err){
-			    return callback(err);
-			}
-			return callback(null,fkpk,opts);
-		    });
-		}
-		else{
-		    return callback(null,fkpk,opts);
-		}
-	    });
-	},
 	function(fkpk,opts,callback){
 	    var opts={
 		dbconfig:options.dbconfig	
