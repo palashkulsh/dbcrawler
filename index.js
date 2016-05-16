@@ -289,6 +289,11 @@ function main(fkpk,options,cb){
 	}
     ],cb);
 }
+
+module.exports={
+    main:main
+};
+
 //todo
 //1)commander support for cli input
 //2)meta data for merchant payout
