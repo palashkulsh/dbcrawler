@@ -27,7 +27,7 @@ function deepEqual(a, b) {
 function getRecursionInput(metadata,data, result, cb) {
     var fkpk=metadata.constraints;
     if (!result || !result.length) {
-	return cb(new Error('No result found'), result);
+	return cb(null, []);
     }
     var newinput = [];
     var element = {};
@@ -102,7 +102,7 @@ function getData(metadata,finalData,finalQuery,data, cb) {
     mysqlcon.exec(query.toString(),metadata.dbconfig,function (err, result) {
 	if (err) {
 	    return cb(err);
-	}
+	}	
 	result.forEach(function (eachRes) {
 	    Object.keys(eachRes).forEach(function (eachKey) {
 		//formatting date because date comes in non consumable form
@@ -204,6 +204,7 @@ function crawl(options,schema,constraints,callback){
     //seed for dbcrawler to start
     var input = options.seed;
     recursivePush(metadata,input, q, function (err) {
+	util.log(err);
 	console.log('some error occured',err);
     });
     //when there is no element in the queue
