@@ -42,10 +42,10 @@ the format of this json consists of
 
         var options={
             	    dbconfig:{
-            	    user:root,
-            	    password:'pass',
-            	    database:'database name',
-            	    host:'localhost'
+            			user:root,
+            			password:'pass',
+            			database:'database name',
+            			host:'localhost'
             	    },
             	    queryFileName:'/tmp/palash.sql',
             	    // noQuery:true,
