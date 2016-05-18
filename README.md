@@ -7,14 +7,20 @@ Getting started with crawling.
     var dbcrawler = require('dbcrawler');
     (function(){
         if(require.main==module){
-    	var fkpk = require('./payout_fkpk');
+    	var fkpk = {
+			constraint:
+				[
+					{table_name:"actor",column_name:"actor_id",referenced_table_name:"actor_info",referenced_column_name:"actor_id"},
+					{table_name:"film_actor",column_name:"film_id",referenced_table_name:"film",referenced_column_name:"film_id"}, 
+					{table_name:"actor",column_name:"actor_id",referenced_table_name:"film_actor",referenced_column_name:"actor_id"}, 
+				]
+            };
     	var options={
     	    dbconfig:{
-    		host     : 'localhost',
-    		user     : 'palash',
-    		password : 'password',
-    		database : 'sakila'
-    
+    			host     : 'localhost',
+    			user     : 'palash',
+    			password : 'password',
+    			database : 'sakila'
     	    },
     	    queryFileName:'/tmp/sakila.sql',
     	    // noQuery:true,
