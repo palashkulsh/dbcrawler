@@ -3,7 +3,13 @@ crawls database and makes insert statement for all the tables so that some data 
 input consists of multiple parts
 
   * 1)constraints according to which data has to be extracted or crawled from the database
-the format of this file consists of
+the format of this json consists of 
+	* constraints - array of constraints according to which data is to be crawled in database
+	 * table_name - name of table which is currently being crawled. According to 
+
+        {table_name:"actor",column_name:"actor_id",referenced_table_name:"actor_info",referenced_column_name:"actor_id"}
+
+	value of column actor_id of table actor is used to select data from actor info table i.e. actor.actor_id=actor_info.actor_id
 
         var data={constraint:
              [
@@ -25,7 +31,13 @@ the format of this file consists of
 	* password
 
 	* host
-
+  
+		dbconfig={
+			user:root,
+			password:'pass',
+			database:'database name',
+			host:'localhost'
+		}
 
 
         var options={
