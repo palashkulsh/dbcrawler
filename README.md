@@ -1,5 +1,38 @@
 # dbcrawler
 crawls database and makes insert statement for all the tables so that some data can be taken from all tables
+
+Getting started with crawling.
+	To run the test code for dbcrawler you must get the sakila database from [here](https://dev.mysql.com/doc/index-other.html)
+
+    var dbcrawler = require('dbcrawler');
+    (function(){
+        if(require.main==module){
+    	var fkpk = require('./payout_fkpk');
+    	var options={
+    	    dbconfig:{
+    		host     : 'localhost',
+    		user     : 'root',
+    		password : 'paytm@197',
+    		database : 'payouts'
+    
+    	    },
+    	    queryFileName:'/tmp/payout.sql',
+    	    // noQuery:true,
+    	    noData:true, 
+    	    seed:[{
+    		table: 'sales_data',
+    		result: [{
+    		    column: 'order_item_id',
+    		    value: [1072757391]
+    		}]
+    	    }]	    
+    	};
+    	dbcrawler.main(fkpk,options,function (err,result){
+    	    console.log(err,result);
+    	});
+        }
+    })();
+
 input consists of multiple parts
 
   * 1)constraints according to which data has to be extracted or crawled from the database
@@ -9,7 +42,7 @@ the format of this json consists of
 
         {table_name:"actor",column_name:"actor_id",referenced_table_name:"actor_info",referenced_column_name:"actor_id"}
 
-	value of column actor_id of table actor is used to select data from actor info table i.e. actor.actor_id=actor_info.actor_id
+	value of column actor_id of table actor is used to select data from actor info table
 
         var data={constraint:
              [
@@ -21,8 +54,8 @@ the format of this json consists of
         
             module.exports=data;
 
-
-  * 2)Following information about database is required to access the database dbconfig
+  * 2) options
+	* 2)Following information about database is required to access the database dbconfig
 	
 	* user
 
@@ -42,10 +75,10 @@ the format of this json consists of
 
         var options={
             	    dbconfig:{
-            			user:root,
-            			password:'pass',
-            			database:'database name',
-            			host:'localhost'
+            	    user:root,
+            	    password:'pass',
+            	    database:'database name',
+            	    host:'localhost'
             	    },
             	    queryFileName:'/tmp/palash.sql',
             	    // noQuery:true,
@@ -66,4 +99,4 @@ Format of seed data
   * 2)result consists of array of filters which are anded to one another
 
 
-More detailed docs are being created . New hero is getting ready
+More detailed docs are being created . New hero is getting ready 
