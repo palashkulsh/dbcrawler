@@ -11,20 +11,20 @@ Getting started with crawling.
     	var options={
     	    dbconfig:{
     		host     : 'localhost',
-    		user     : 'root',
-    		password : 'paytm@197',
-    		database : 'payouts'
+    		user     : 'palash',
+    		password : 'password',
+    		database : 'sakila'
     
     	    },
-    	    queryFileName:'/tmp/payout.sql',
+    	    queryFileName:'/tmp/sakila.sql',
     	    // noQuery:true,
     	    noData:true, 
     	    seed:[{
-    		table: 'sales_data',
-    		result: [{
-    		    column: 'order_item_id',
-    		    value: [1072757391]
-    		}]
+    			table: 'actor',
+    			result: [{
+    				column: 'actor_id',
+    				value: [1]
+				}]
     	    }]	    
     	};
     	dbcrawler.main(fkpk,options,function (err,result){
