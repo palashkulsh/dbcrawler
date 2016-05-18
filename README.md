@@ -10,9 +10,9 @@ Getting started with crawling.
     	var fkpk = {
 			constraint:
 				[
-					{table_name:"actor",column_name:"actor_id",referenced_table_name:"actor_info",referenced_column_name:"actor_id"},
-					{table_name:"film_actor",column_name:"film_id",referenced_table_name:"film",referenced_column_name:"film_id"}, 
-					{table_name:"actor",column_name:"actor_id",referenced_table_name:"film_actor",referenced_column_name:"actor_id"}, 
+					{table_name:"actor",column_name:"actor_id",referenced_table_name:"actor_info",referenced_column_name:"actor_id"}, <!-- first -->
+					{table_name:"film_actor",column_name:"film_id",referenced_table_name:"film",referenced_column_name:"film_id"}, <!-- second -->
+					{table_name:"actor",column_name:"actor_id",referenced_table_name:"film_actor",referenced_column_name:"actor_id"}, <!-- third -->
 				]
             };
     	var options={
@@ -22,17 +22,22 @@ Getting started with crawling.
     			password : 'password',
     			database : 'sakila'
     	    },
-    	    queryFileName:'/tmp/sakila.sql',
-    	    // noQuery:true,
-    	    noData:true, 
+    	    queryFileName:'/tmp/sakila.sql', <!-- where query file is finally written -->
+    	    // noQuery:true,				 <!-- if flag is set then queries are not made -->
+    	    noData:true,					 <!-- if noData flag is set the data is not given in result of dbcrawler.main's callback-->
+			<!-- seed data i.e. starting point of our crawl -->
     	    seed:[{
     			table: 'actor',
     			result: [{
     				column: 'actor_id',
     				value: [1]
 				}]
-    	    }]	    
+    	    }]
     	};
+		<!-- what happens here is crawler selects from actor table where actor_id is 1 -->
+		<!-- then using the first constraints data it selects from actor_info table where actor_id= actor_id info retrieved from actor table which is 1 in our case -->
+		<!-- then using  third constraint it selects film_id from film table using id value retrieved from actor table -->
+		<!-- then second constraint crawler selects from film actor table where film_id = film_id retrieved from the film table in previous step -->
     	dbcrawler.main(fkpk,options,function (err,result){
     	    console.log(err,result);
     	});
