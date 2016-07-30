@@ -8,6 +8,8 @@ var assert = require('assert');
 var mysqlcon=require('./mysqlcon');
 var generateSchema = require('./generate_schema');
 var dbconfig = require('./config/dbconfig');
+var DataUtils = require('./utils/data_utils');
+var INSERT_STATEMENT_LIMIT = 20;
 
 function deepEqual(a, b) {
     try {
@@ -68,8 +70,13 @@ function pushQuery(metadata,table,result,finalQuery) {
     }
     //remove the columns which you donot want to insert
     var newResult = removeIgnoreColumns(metadata,table, result);
-    insertQuery = table.insert(newResult).toString();
-    pushToArray(finalQuery,insertQuery,table._name);
+    var newResultSet = DataUtils.splitArrayToMultipleArray(newResult,INSERT_STATEMENT_LIMIT);
+    //instead of making insert statement with all the results at one time
+    //make multiple insert statements with only bunch of data at sigle time
+    newResultSet.forEach(function (eachResult){
+	insertQuery = table.insert(eachResult).toString();
+	pushToArray(finalQuery,insertQuery,table._name);
+    });
     return ;
 }
 
