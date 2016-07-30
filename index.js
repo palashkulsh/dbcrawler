@@ -220,7 +220,7 @@ function writeToFile(data,filename,cb){
     Object.keys(data).forEach(function  (d){
 	data[d].forEach(function (q){
 	    fs.appendFileSync(filename,q);
-	    fs.appendFileSync(filename,'\n');	     	    
+	    fs.appendFileSync(filename,';\n');	     	    
 	});
     });
     return cb(null,filename);
