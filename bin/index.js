@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+var Path = require('path');
 var dbconfig = require('../config/dbconfig');
 var DbCrawler = require('../index');
 var Commander = require('commander');
-var fkpk = require('../test/sakila/sakila_fkpk');
+var SakilaFkpk = require('../test/sakila/sakila_fkpk');
 
 /**
  * input will be of the form
@@ -90,11 +91,13 @@ function parseSeed(input){
 	    .option('-p --password <string>','password to database',String,'password')
 	    .option('-c --constraints <value>','Constraint using which to crawl the database',parseConstraints)
 	    .option('-s --seed <value>','data with which to start the crawl,different seed seperated by semicolon',parseSeed)
+	    .option('-f --constraint_file <string>','import constraints from .json file.',String)
+	    .option('-o --output_file <string>','path of the file where to write the sql dump statements',String)
 	    .parse(process.argv);
 
 	var commandLineOptions = {};
 	var dbParams = ['host','database','user','password'];
-	['host','database','user','password','constraints','seed'].forEach(function (key){
+	['host','database','user','password','constraints','seed','constraint_file','output_file'].forEach(function (key){
 	    if(Commander[key]){
 		commandLineOptions[key]=Commander[key];
 	    }
@@ -109,13 +112,22 @@ function parseSeed(input){
 	});
 	var options={
 	    dbconfig:flag?dbconfig:dbOptions,
-	    queryFileName:'/tmp/palash.sql',
+	    queryFileName: commandLineOptions.output_file || '/tmp/dbcrawler.sql',
 	    // noQuery:true,
 	    noData:true, 
 	    seed: commandLineOptions.seed || defaultSeed
 	};
-	console.log(JSON.stringify(commandLineOptions,null ,4))
-	DbCrawler.main(commandLineOptions.constraints,options,function (err,result){
+	var constraints ;
+	if(commandLineOptions.constraint_file){
+	    constraints=require(Path.resolve(commandLineOptions.constraint_file));
+	}else if(commandLineOptions.constraints){
+	    constraints=commandLineOptions.constraints;
+	}else{
+	    console.log('using default sakila database constraints');
+	    constraints=SakilaFkpk;
+	}
+	console.log("input = ",JSON.stringify(commandLineOptions,null ,4),"constraint = ",JSON.stringify(constraints,null,4))
+	DbCrawler.main(constraints,options,function (err,result){
 	    console.log(err,result);
 	})
     }
