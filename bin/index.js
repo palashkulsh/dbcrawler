@@ -129,6 +129,7 @@ function parseSeed(input){
 	console.log("input = ",JSON.stringify(commandLineOptions,null ,4),"constraint = ",JSON.stringify(constraints,null,4))
 	DbCrawler.main(constraints,options,function (err,result){
 	    console.log(err,result);
+	    process.exit(0);
 	})
     }
 })();
