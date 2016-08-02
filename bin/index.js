@@ -16,7 +16,8 @@ var CrawlerParser = require('../lib/parser');
 function parseConstraints(input) {
     try {
         var constraintParser = CrawlerParser.getConstraintParser();
-        var finalConstraintData = constraintParser.parse(input);
+        var finalConstraintData = {};
+	finalConstraintData.constraint=constraintParser.parse(input);	
         return finalConstraintData;
     } catch (e) {
         console.log('constraints can not be parsed', e)
