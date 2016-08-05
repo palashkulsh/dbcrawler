@@ -49,11 +49,13 @@ function getRecursionInput(metadata,data, result, cb) {
 		    }],
 		};
 		alreadyPresent = false;
-		newinput.forEach(function (input) {
-		    if (deepEqual(input, element)) {
-			alreadyPresent = true;
-		    }
-		});
+		if(result.lengt<1000){
+		    newinput.forEach(function (input) {
+			if (deepEqual(input, element)) {
+			    alreadyPresent = true;
+			}
+		    });
+		}
 		if (!alreadyPresent) {
 		    newinput.push(element);
 		}
