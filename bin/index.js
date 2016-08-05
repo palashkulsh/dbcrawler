@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
+var Fs = require('fs');
 var Path = require('path');
 var dbconfig = require('../config/dbconfig');
 var DbCrawler = require('../index');
 var Commander = require('commander');
 var SakilaFkpk = require('../test/sakila/sakila_fkpk');
 var CrawlerParser = require('../lib/parser');
+var PATH_TO_PACKAGE_JSON = Path.join(__dirname, '../package.json');
 
 /**
  * input will be of the form
@@ -17,7 +19,7 @@ function parseConstraints(input) {
     try {
         var constraintParser = CrawlerParser.getConstraintParser();
         var finalConstraintData = {};
-	finalConstraintData.constraint=constraintParser.parse(input);	
+        finalConstraintData.constraint = constraintParser.parse(input);
         return finalConstraintData;
     } catch (e) {
         console.log('constraints can not be parsed', e)
@@ -53,8 +55,9 @@ function parseSeed(input) {
                 value: 1
             }]
         }];
+        var pckgJson = JSON.parse(Fs.readFileSync(PATH_TO_PACKAGE_JSON, 'utf8'));
         Commander
-            .version('0.0.1')
+            .version(pckgJson.version)
             .option('-h --host <string>', 'host where database has to be accessed', String, 'localhost')
             .option('-u --user <string>', 'database user', String, 'palash')
             .option('-d --database <string>', 'database which is to crawled', String, 'sakila')
