@@ -23,8 +23,9 @@
 
 %% /* language grammar */
 
-expressions
-    : JOIN_CONDITIONS EOF
+expressions: EOF { return [];}
+
+    | JOIN_CONDITIONS EOF
 {
 return $1; }
     ;
