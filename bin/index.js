@@ -8,6 +8,7 @@ var Commander = require('commander');
 var SakilaFkpk = require('../test/sakila/sakila_fkpk');
 var CrawlerParser = require('../lib/parser');
 var PATH_TO_PACKAGE_JSON = Path.join(__dirname, '../package.json');
+var DataUtils = require('../utils/data_utils');
 
 /**
  * input will be of the form
@@ -19,7 +20,7 @@ function parseConstraints(input) {
     try {
         var constraintParser = CrawlerParser.getConstraintParser();
         var finalConstraintData = {};
-        finalConstraintData.constraint = constraintParser.parse(input);
+        finalConstraintData.constraint = constraintParser.parse(input) || []; // to allow giving empty constraints
         return finalConstraintData;
     } catch (e) {
         console.log('constraints can not be parsed', e)
@@ -42,26 +43,27 @@ function parseSeed(input) {
     }
 }
 
+function finalExit(err) {
+    if (err) {
+        console.log(err);
+        process.exit(1);
+    }
+    process.exit(0);
+}
+
 //todo
 //1)commander support for cli input
 //2)meta data for merchant payout
 //3)seed object as well as array support
 (function () {
     if (require.main == module) {
-        var defaultSeed = [{
-            table: 'actor',
-            result: [{
-                column: 'actor_id',
-                value: 1
-            }]
-        }];
         var pckgJson = JSON.parse(Fs.readFileSync(PATH_TO_PACKAGE_JSON, 'utf8'));
         Commander
             .version(pckgJson.version)
-            .option('-h --host <string>', 'host where database has to be accessed', String, 'localhost')
-            .option('-u --user <string>', 'database user', String, 'palash')
-            .option('-d --database <string>', 'database which is to crawled', String, 'sakila')
-            .option('-p --password <string>', 'password to database', String, 'password')
+            .option('-h --host <string>', 'host where database has to be accessed', String)
+            .option('-u --user <string>', 'database user', String)
+            .option('-d --database <string>', 'database which is to crawled', String)
+            .option('-p --password <string>', 'password to database', String)
             .option('-c --constraints <value>', 'Constraint using which to crawl the database', parseConstraints)
             .option('-s --seed <value>', 'data with which to start the crawl,different seed seperated by semicolon', parseSeed)
             .option('-f --constraint_file <string>', 'import constraints from .json file.', String)
@@ -77,9 +79,9 @@ function parseSeed(input) {
         });
         var flag = 0,
             dbOptions = {};
-        ['host', 'database', 'user', 'password'].forEach(function (eachParam) {
+        ['host', 'database', 'user', 'password', 'seed'].forEach(function (eachParam) {
             if (!commandLineOptions[eachParam]) {
-                flag = 1;
+                finalExit('["host", "database", "user", "password", "seed"] are mandatory params');
             } else {
                 dbOptions[eachParam] = commandLineOptions[eachParam];
             }
@@ -89,7 +91,7 @@ function parseSeed(input) {
             queryFileName: commandLineOptions.output_file || '/tmp/dbcrawler.sql',
             // noQuery:true,
             noData: true,
-            seed: commandLineOptions.seed || defaultSeed
+            seed: commandLineOptions.seed
         };
         var constraints;
         if (commandLineOptions.constraint_file) {
@@ -97,13 +99,12 @@ function parseSeed(input) {
         } else if (commandLineOptions.constraints) {
             constraints = commandLineOptions.constraints;
         } else {
-            console.log('using default sakila database constraints');
-            constraints = SakilaFkpk;
+            constraints = DataUtils.getSkeletonConstraints();
         }
         console.log("input = ", JSON.stringify(commandLineOptions, null, 4), "constraint = ", JSON.stringify(constraints, null, 4))
         DbCrawler.main(constraints, options, function (err, result) {
             console.log(err, result);
-            process.exit(0);
+            finalExit();
         })
     }
 })();
