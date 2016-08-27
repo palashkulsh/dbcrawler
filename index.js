@@ -65,7 +65,7 @@ function getRecursionInput(metadata,data, result, cb) {
     return cb(null, newinput);
 }
 
-function pushQuery(metadata,table,result,finalQuery) {
+function pushQuery(options,metadata,table,result,finalQuery,cb) {
     var insertQuery = table.insert(result).toQuery();
     if (!insertQuery || !insertQuery.values || !insertQuery.values.length) {
 	return ;
@@ -75,14 +75,16 @@ function pushQuery(metadata,table,result,finalQuery) {
     var newResultSet = DataUtils.splitArrayToMultipleArray(newResult,INSERT_STATEMENT_LIMIT);
     //instead of making insert statement with all the results at one time
     //make multiple insert statements with only bunch of data at sigle time
-    newResultSet.forEach(function (eachResult){
-	insertQuery = table.insert(eachResult).toString();
-	pushToArray(finalQuery,insertQuery,table._name);
+    async.eachSeries(newResultSet,function (eachResultSet,callback){
+	insertQuery = table.insert(eachResultSet).toString();
+	//pushToArray(finalQuery,insertQuery,table._name);
+	fs.appendFile(options.queryFileName,insertQuery,callback);
+    },function(){
+	return cb();
     });
-    return ;
 }
 
-function getData(metadata,finalData,finalQuery,data, cb) {
+function getData(options,metadata,finalData,finalQuery,data, cb) {
     var schema=metadata.schema;
     var filters = [];
     if (!data.table) {
@@ -127,9 +129,12 @@ function getData(metadata,finalData,finalQuery,data, cb) {
 		return cb(err);
 	    }
 	    if(!metadata.noQuery){
-		pushQuery(metadata,table,result,finalQuery);		
+		pushQuery(options,metadata,table,result,finalQuery,function (){
+		    return cb(null, pushThese);
+		});		
+	    }else{
+		return cb(null, pushThese);
 	    }
-	    return cb(null, pushThese);
 	}); //ends getRecursionInput
     }); //ends query.exec
 }
@@ -207,9 +212,9 @@ function crawl(options,schema,constraints,callback){
     var metadata={
 	schema:schema,
 	constraints: constraints,
-	dbconfig:options.dbconfig
+	dbconfig:options.dbconfig	
     };
-    var q = async.queue(getData.bind(null,metadata,finalData,finalQuery));
+    var q = async.queue(getData.bind(null,options,metadata,finalData,finalQuery));
     //seed for dbcrawler to start
     var input = options.seed;
     recursivePush(metadata,input, q, function (err) {
@@ -245,8 +250,20 @@ function writeToFile(data,filename,cb){
 */
 
 function main(fkpk,options,cb){
+    //initializations
+    options.queryFileName = options.queryFileName || '/tmp/query.sql';
+
     async.waterfall([
 	async.constant(fkpk,options),
+	function (fkpk,opts,callback){
+	    fs.writeFile(opts.queryFileName,'',function (err){
+		if(err){
+		    util.log('unable to initiate file write');
+		    return callback(err);
+		}
+		return callback(null,fkpk,opts);
+	    });
+	},
 	function(fkpk,opts,callback){
 	    var opts={
 		dbconfig:options.dbconfig	
@@ -276,13 +293,13 @@ function main(fkpk,options,cb){
 	    crawl(options,schema,fkpk,function (err,finalData,finalQuery){		
 		async.parallel({
 		    query: function(callback){
-			var filename=options.queryFileName || '/tmp/query.sql';
-			if(!options.noQuery){
-			    writeToFile(finalQuery,filename,callback);
-			}
-			else{
-			    return callback(null,'');
-			}
+			fs.exists(options.queryFileName,function (exists){
+			    if(exists){
+				return callback(null,options.queryFileName);
+			    }else{
+				return callback(null,'');
+			    }
+			});
 		    },
 		    data: function(callback){
 			if(options.noData){
