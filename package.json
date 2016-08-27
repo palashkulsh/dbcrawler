@@ -1,6 +1,6 @@
 {
   "name": "dbcrawler",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "crawls mysql database and creates insert queries or returns data from multiple table depending on the relationship information of the tables provided",
   "main": "index.js",
   "scripts": {
