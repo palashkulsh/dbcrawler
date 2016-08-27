@@ -166,9 +166,7 @@ function removeIgnoreColumns(metadata, table, result) {
  * items.result {object}  
  */
 function recursivePush(metadata, items, q, cb) {
-    // if (!items || !items.length) {
-    //  return cb(new Error('no items to be pushed in queue'));
-    // }
+    process.stdout.write('elements left to be processed '+ q.length()+'\r');
     items.forEach(function (item) {
         //whenever item is pushed into queue getData runs 
         //getData returns err and pushThese (new elements to be pushed into queue) 
@@ -178,7 +176,6 @@ function recursivePush(metadata, items, q, cb) {
                 return cb(err);
             }
             recursivePush(metadata, pushThese, q, function (err) {
-                util.log('elements left to be processed', q.length())
                 return cb(err);
             });
         });
