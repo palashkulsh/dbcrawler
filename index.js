@@ -68,7 +68,7 @@ function getRecursionInput(metadata,data, result, cb) {
 function pushQuery(options,metadata,table,result,finalQuery,cb) {
     var insertQuery = table.insert(result).toQuery();
     if (!insertQuery || !insertQuery.values || !insertQuery.values.length) {
-	return ;
+	return cb();
     }
     //remove the columns which you donot want to insert
     var newResult = removeIgnoreColumns(metadata,table, result);
