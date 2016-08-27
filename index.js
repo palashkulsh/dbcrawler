@@ -77,6 +77,7 @@ function pushQuery(options, metadata, table, result, finalQuery, cb) {
     //make multiple insert statements with only bunch of data at sigle time
     async.eachSeries(newResultSet, function (eachResultSet, callback) {
         insertQuery = table.insert(eachResultSet).toString();
+        insertQuery += ';\n';
         fs.appendFile(options.queryFileName, insertQuery, callback);
     }, function () {
         return cb();
@@ -177,6 +178,7 @@ function recursivePush(metadata, items, q, cb) {
                 return cb(err);
             }
             recursivePush(metadata, pushThese, q, function (err) {
+                util.log('elements left to be processed', q.length())
                 return cb(err);
             });
         });
