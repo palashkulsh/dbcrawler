@@ -220,7 +220,7 @@ function crawl(options, schema, constraints, callback) {
     });
     //when there is no element in the queue
     q.drain = function () {
-        console.log('all items processed');
+        console.log('\nall items processed');
         //console.log(finalData)
         return callback(null, finalData, finalQuery);
     };
