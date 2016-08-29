@@ -1,47 +1,51 @@
 {
-  "name": "dbcrawler",
-  "version": "0.0.29",
-  "description": "crawls mysql database and creates insert queries or returns data from multiple table depending on the relationship information of the tables provided",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "patch-release": "npm version patch && npm publish && git push --follow-tags"
-  },
-  "bin": {
-    "dbcrawler": "bin/index.js"
-  },
-  "dependencies": {
-    "async": "~1.3.0",
-    "commander": "^2.9.0",
-    "debug": "~0.7.2",
-    "jison": "^0.4.17",
-    "mysql": "2.3.2",
-    "path": "^0.12.7",
-    "sql": "^0.67.0",
-    "sql-generate": "^1.1.0"
-  },
-  "keywords": [
-    "database",
-    "crawler",
-    "dbcrawler",
-    "take",
-    "selective",
-    "dump",
-    "of",
-    "database"
-  ],
-  "author": "palash kulshreshtha",
-  "license": "ISC",
-  "directories": {
-    "test": "test"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/palashkulsh/dbcrawler.git"
-  },
-  "bugs": {
-    "url": "https://github.com/palashkulsh/dbcrawler/issues"
-  },
-  "homepage": "https://github.com/palashkulsh/dbcrawler#readme"
+    "name": "dbcrawler",
+    "version": "0.0.29",
+    "description": "crawls mysql database and creates insert queries or returns data from multiple table depending on the relationship information of the tables provided",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "patch-release": "npm version patch && npm publish && git push --follow-tags"
+    },
+    "bin": {
+        "dbcrawler": "bin/index.js"
+    },
+    "dependencies": {
+        "async": "~1.3.0",
+        "commander": "^2.9.0",
+        "debug": "~0.7.2",
+        "jison": "^0.4.17",
+        "mysql": "2.3.2",
+        "path": "^0.12.7",
+        "require-from-string": "^1.2.0",
+        "sql": "^0.67.0",
+        "sql-generate": "^1.1.0"
+    },
+    "keywords": [
+        "database",
+        "crawler",
+        "dbcrawler",
+        "take",
+        "selective",
+        "dump",
+        "of",
+        "database",
+        "sqldump",
+        "mysqldump",
+        "sql"
+    ],
+    "author": "palash kulshreshtha",
+    "license": "ISC",
+    "directories": {
+        "test": "test"
+    },
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/palashkulsh/dbcrawler.git"
+    },
+    "bugs": {
+        "url": "https://github.com/palashkulsh/dbcrawler/issues"
+    },
+    "homepage": "https://github.com/palashkulsh/dbcrawler#readme"
 }
