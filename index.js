@@ -271,7 +271,7 @@ function main(fkpk, options, cb) {
                 }
                 var newErr, schema;
                 try {
-                    schema = require(result.file);
+                    schema = result.data;
                     if (!schema) {
                         newErr = new Error('empty auto generated schema file found ');
                     }
