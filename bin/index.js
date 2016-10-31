@@ -68,11 +68,12 @@ function finalExit(err) {
             .option('-s --seed <value>', 'data with which to start the crawl,different seed seperated by semicolon', parseSeed)
             .option('-f --constraint_file <string>', 'import constraints from .json file.', String)
             .option('-o --output_file <string>', 'path of the file where to write the sql dump statements', String)
+            .option('-P --port <string>', 'port on which to connect to database', Number)
             .parse(process.argv);
 
         var commandLineOptions = {};
-        var dbParams = ['host', 'database', 'user', 'password'];
-        ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file'].forEach(function (key) {
+        var dbParams = ['host', 'database', 'user', 'password', 'port'];
+        ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file', 'port'].forEach(function (key) {
             if (Commander[key]) {
                 commandLineOptions[key] = Commander[key];
             }
@@ -86,6 +87,9 @@ function finalExit(err) {
                 dbOptions[eachParam] = commandLineOptions[eachParam];
             }
         });
+        if (commandLineOptions.port) {
+            dbOptions.port = commandLineOptions.port;
+        }
         var options = {
             dbconfig: flag ? dbconfig : dbOptions,
             queryFileName: commandLineOptions.output_file || '/tmp/dbcrawler.sql',
