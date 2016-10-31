@@ -13,7 +13,7 @@ function actuallyGenerateSchema(options, callback) {
         dsn: 'mysql://' + usingConfig.user + ':' + usingConfig.password + '@' + usingConfig.host + '/' + usingConfig.database,
         dialect: 'mysql',
         append: "sql.setDialect('mysql');",
-        omitComments: true,
+        omitComments: true
     };
     generateSqlDefinition(opts, function (err, stats) {
         if (err) {
@@ -23,8 +23,14 @@ function actuallyGenerateSchema(options, callback) {
             return callback(new Error('not able to generate schema'));
         }
         var schema;
+	var o= { 
+	    //passing prependPaths forces the module compilation in require from string function to find
+	    //sql module in node_modules directory of dbcrawler
+	    //this solves the problem of dbcrawler trying to find sql module when running globally
+	    prependPaths:[Path.join(__dirname,'./node_modules')]
+	};
         try {
-            schema = RequireFromString(stats.buffer.toString());
+            schema = RequireFromString(stats.buffer.toString(),o);
         } catch (ex) {
             return callback(new Error('not able to parse schema file'));
         }
