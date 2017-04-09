@@ -28,8 +28,10 @@ dbcrawler  -u "palash" -d "sakila" -h "localhost" -p "password" -c "actor_info.a
 
 ###### -u user
 User of the database which has permission to access the database. eg root,app etc.
+
 ######  -h host
 Address where database is accessible. eg. localhost, 127.0.0.1 etc.
+
 ###### -d database
 Database which is to be crawled . Eg sakila database in default example of this module. This sakila database can be downloaded from [here]: <https://dev.mysql.com/doc/index-other.html>
 ###### -p password
