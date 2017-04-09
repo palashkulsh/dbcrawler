@@ -28,17 +28,17 @@ dbcrawler  -u "palash" -d "sakila" -h "localhost" -p "password" -c "actor_info.a
 
 ###### -u user
 User of the database which has permission to access the database. eg root,app etc.
-#####  -h host
+######  -h host
 Address where database is accessible. eg. localhost, 127.0.0.1 etc.
-##### -d database
+###### -d database
 Database which is to be crawled . Eg sakila database in default example of this module. This sakila database can be downloaded from [here]: <https://dev.mysql.com/doc/index-other.html>
-##### -p password
+###### -p password
 Password to access the database.
-##### -c constraints
+###### -c constraints
 Constraints are just join conditions . Eg             ```actor_info.actor_id=actor.actor_id,film.film_id=film_actor.film_id``` . The format acceptible is table1.column1 = table2.column2 . What this means is that use values of column2 of table2 to retrieve values from table1.
-##### -s  seed
+###### -s  seed
 Seed means the initial data that has to be given to crawler to start the crawl. For eg. ```actor.actor_id=3,4,5;film_actor.actor_id=5``` . Each seed consists of ```tableName.columnName=commaSeperatedValues``` . Each two seeds are seperated from each other using ```;``` as given in example above. Above seed will start from 2 points first from actor table using actor_id values 3,4,5 and from film_actor table  using actor_id 5.
-##### -f constrant_file
+###### -f constrant_file
 instead of passing constraint from commandline they can also be exported from json file. the format of the json will be like
 ```
 var data = {
