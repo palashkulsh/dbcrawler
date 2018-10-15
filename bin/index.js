@@ -43,6 +43,28 @@ function parseSeed(input) {
     }
 }
 
+function parseIgnore(input){
+  var tableColumnMap = {};
+  if(!input){
+    return tableColumnMap;
+  }
+  var inputs;
+  input.split(',').forEach(function(eachInput){
+    eachInput = eachInput.trim();
+    if(eachInput){
+      inputs = eachInput.split('.');
+      if(!inputs || !inputs[0] || !inputs[1]){
+        return;
+      }
+      if(!tableColumnMap[inputs[0]]){
+        tableColumnMap[inputs[0]] = [];
+      }
+      tableColumnMap[inputs[0]].push(inputs[1]);
+    }
+  });
+  return tableColumnMap;
+}
+
 function finalExit(err) {
     if (err) {
         console.log(err);
@@ -64,6 +86,7 @@ function finalExit(err) {
             .option('-u --user <string>', 'database user', String)
             .option('-d --database <string>', 'database which is to crawled', String)
             .option('-p --password <string>', 'password to database', String)
+            .option('-i --ignore <string>', 'table.columns to ignore from insert generation', parseIgnore)
             .option('-c --constraints <value>', 'Constraint using which to crawl the database', parseConstraints)
             .option('-s --seed <value>', 'data with which to start the crawl,different seed seperated by semicolon', parseSeed)
             .option('-f --constraint_file <string>', 'import constraints from .json file.', String)
@@ -73,7 +96,7 @@ function finalExit(err) {
 
         var commandLineOptions = {};
         var dbParams = ['host', 'database', 'user', 'password', 'port'];
-        ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file', 'port'].forEach(function (key) {
+      ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file', 'port', 'ignore'].forEach(function (key) {
             if (Commander[key]) {
                 commandLineOptions[key] = Commander[key];
             }
@@ -95,7 +118,7 @@ function finalExit(err) {
             queryFileName: commandLineOptions.output_file || '/tmp/dbcrawler.sql',
             // noQuery:true,
             noData: true,
-            seed: commandLineOptions.seed
+          seed: commandLineOptions.seed,
         };
         var constraints;
         if (commandLineOptions.constraint_file) {
@@ -105,6 +128,8 @@ function finalExit(err) {
         } else {
             constraints = DataUtils.getSkeletonConstraints();
         }
+        constraints.insert = {}
+        constraints.insert.ignore = commandLineOptions.ignore
         console.log("input = ", JSON.stringify(commandLineOptions, null, 4), "constraint = ", JSON.stringify(constraints, null, 4))
         DbCrawler.main(constraints, options, function (err, result) {
             console.log(err, result);
