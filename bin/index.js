@@ -87,6 +87,7 @@ function finalExit(err) {
             .option('-d --database <string>', 'database which is to crawled', String)
             .option('-p --password <string>', 'password to database', String)
             .option('-i --ignore <string>', 'table.columns to ignore from insert generation', parseIgnore)
+            .option('-r --required <string>', 'only table.columns to be used for insert generation', parseIgnore)
             .option('-c --constraints <value>', 'Constraint using which to crawl the database', parseConstraints)
             .option('-s --seed <value>', 'data with which to start the crawl,different seed seperated by semicolon', parseSeed)
             .option('-f --constraint_file <string>', 'import constraints from .json file.', String)
@@ -96,7 +97,7 @@ function finalExit(err) {
 
         var commandLineOptions = {};
         var dbParams = ['host', 'database', 'user', 'password', 'port'];
-      ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file', 'port', 'ignore'].forEach(function (key) {
+      ['host', 'database', 'user', 'password', 'constraints', 'seed', 'constraint_file', 'output_file', 'port', 'ignore', 'required'].forEach(function (key) {
             if (Commander[key]) {
                 commandLineOptions[key] = Commander[key];
             }
@@ -130,6 +131,7 @@ function finalExit(err) {
         }
         constraints.insert = {}
         constraints.insert.ignore = commandLineOptions.ignore
+        constraints.insert.required = commandLineOptions.required
         console.log("input = ", JSON.stringify(commandLineOptions, null, 4), "constraint = ", JSON.stringify(constraints, null, 4))
         DbCrawler.main(constraints, options, function (err, result) {
             console.log(err, result);

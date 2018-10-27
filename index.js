@@ -72,6 +72,7 @@ function pushQuery(options, metadata, table, result, finalQuery, cb) {
     }
     //remove the columns which you donot want to insert
     var newResult = removeIgnoreColumns(metadata, table, result);
+    newResult = includeOnlyRequiredColumns(metadata, table, result);
     var newResultSet = DataUtils.splitArrayToMultipleArray(newResult, INSERT_STATEMENT_LIMIT);
     //instead of making insert statement with all the results at one time
     //make multiple insert statements with only bunch of data at sigle time
@@ -154,6 +155,29 @@ function removeIgnoreColumns(metadata, table, result) {
     newResult.forEach(function (eachRes) {
         Object.keys(eachRes).forEach(function (k) {
             if (removeTheseCol.indexOf(k) >= 0) {
+                delete eachRes[k];
+            }
+        });
+    });
+    return newResult;
+}
+
+//includes only the columns which are to be inserted from result into table
+function includeOnlyRequiredColumns(metadata, table, result) {
+    var fkpk = metadata.constraints;
+    if (!fkpk.insert || !fkpk.insert || !fkpk.insert.required || !table._name || !result || !result.length) {
+        return result;
+    }
+    var addTheseCol = fkpk.insert.required[table._name];
+    if (!addTheseCol) {
+        return result;
+    }
+    //copy the data which is to be inserted
+    var newResult = JSON.parse(JSON.stringify(result));
+    //add required columns from each result
+    newResult.forEach(function (eachRes) {
+        Object.keys(eachRes).forEach(function (k) {
+            if (addTheseCol.indexOf(k) < 0) {
                 delete eachRes[k];
             }
         });
