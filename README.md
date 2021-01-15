@@ -1,6 +1,17 @@
 # dbcrawler
 The basic use of dbcrawler is to generate sql dump statements from tables in your database. It crawls the database using the information provided by the user.
 
+For straightforward usecases you can use mysql dump but when you have requirement where 
+order
+
+    item `order.id=item.order_id`
+    payment `order.id=payment.order_id`
+    address `order.id=address.order_id`
+
+now in this case you want to find all data from all tables corresponding to order.id
+
+**This is the usecase where dbcrawler shines. collecting data from multiple table**
+
 To install type - ```npm install -g dbcrawler ```
 
 Basic usage: To test the basic usage
