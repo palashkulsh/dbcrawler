@@ -72,7 +72,7 @@ function pushQuery(options, metadata, table, result, finalQuery, cb) {
     }
     //remove the columns which you donot want to insert
     var newResult = removeIgnoreColumns(metadata, table, result);
-    newResult = includeOnlyRequiredColumns(metadata, table, result);
+    newResult = includeOnlyRequiredColumns(metadata, table, newResult);
     var newResultSet = DataUtils.splitArrayToMultipleArray(newResult, INSERT_STATEMENT_LIMIT);
     //instead of making insert statement with all the results at one time
     //make multiple insert statements with only bunch of data at sigle time
